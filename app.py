@@ -1,5 +1,9 @@
 import pygame
 from settings import *
+from samurai import *
+from solution import *
+from samuraithread import *
+from solutionthread import *
 
 
 class App:
@@ -13,11 +17,13 @@ class App:
         self.mousePos = None
         self.font = pygame.font.SysFont("comic sans ms", cellSize//2)
 
+
     def run(self):
         while self.running:
             self.events()
             self.update()
             self.draw()
+
 
         pygame.quit()
         SystemExit()
@@ -28,11 +34,20 @@ class App:
                 self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 selected = self.mouseOnGrid()
+                selected_2 = self.mouseOnButton()
+                selected_3 = self.mouseOnButton2()
+                selected_4 = self.mouseOnButton3()
                 if selected:
                     print(self.mouseOnGrid())
                     self.selected = selected
+                elif selected_2:
+                    self.mouseOnButton()
+                elif selected_3:
+                    self.mouseOnButton2()
+                elif selected_4:
+                    self.mouseOnButton3()
                 else:
-                    print("not on board")
+
                     self.selected = None
 
     def update(self):
@@ -48,6 +63,27 @@ class App:
         pygame.display.update()
 
     def drawNumbers(self, window):
+        pygame.draw.rect(window, (255, 0, 255), pygame.Rect(730, 250, 150, 40))
+        font = pygame.font.Font('freesansbold.ttf', 20)
+        text = font.render('Sudoku Çöz', True, (255, 255, 255), (255, 0, 255))
+        textRect = text.get_rect()
+        textRect.center = (800, 270)
+        window.blit(text, textRect)
+
+        pygame.draw.rect(window, (255, 0, 255), pygame.Rect(670, 450, 215, 40))
+        font = pygame.font.Font('freesansbold.ttf', 20)
+        text = font.render('Sudoku Çöz Threadli', True, (255, 255, 255), (255, 0, 255))
+        textRect = text.get_rect()
+        textRect.center = (780, 470)
+        window.blit(text, textRect)
+
+        pygame.draw.rect(window, (255, 0, 255), pygame.Rect(670, 550, 220, 40))
+        font = pygame.font.Font('freesansbold.ttf', 20)
+        text = font.render('Threadli Sonuç Göster', True, (255, 255, 255), (255, 0, 255))
+        textRect = text.get_rect()
+        textRect.center = (780, 570)
+        window.blit(text, textRect)
+
         for yidx, row in enumerate(self.grid):
             for xidx, num in enumerate(row):
                 if yidx <= 8 and xidx <= 8:
@@ -91,11 +127,18 @@ class App:
                                (yidx*cellSize)+gridPos[1]]
                         self.textToScreen(window, str(num), pos)
 
+
+
+
+
+
     def drawSelection(self, window, pos):
-        pygame.draw.rect(window, LightBlue, ((
-            pos[0]*cellSize)+gridPos[0], (pos[1]*cellSize)+gridPos[1], cellSize, cellSize))
+        pygame.draw.rect(window, LightBlue, ((pos[0]*cellSize)+gridPos[0], (pos[1]*cellSize)+gridPos[1], cellSize, cellSize))
+
+
 
     def drawGrid(self, window):
+
         pygame.draw.rect(window, WHITE, (gridPos[0], gridPos[1], 630, 630), 2)
         for x in range(10):
             pygame.draw.line(window, Grey, (gridPos[0]+(x*cellSize), gridPos[1]), (gridPos[0]+(
@@ -138,12 +181,46 @@ class App:
             pygame.draw.line(window, Grey, (gridPos[7], gridPos[3]+(
                 x*cellSize)), (gridPos[7]+90, gridPos[3]+(x*cellSize)), 2 if x % 3 == 0 else 1)
 
+
+
     def mouseOnGrid(self):
         if self.mousePos[0] < gridPos[0] or self.mousePos[1] < gridPos[1]:
             return False
         if self.mousePos[0] > gridPos[0]+gridSize or self.mousePos[1] > gridPos[1]+gridSize:
             return False
         return((self.mousePos[0]-gridPos[0])//cellSize, (self.mousePos[1]-gridPos[1])//cellSize)
+
+
+
+
+    def mouseOnButton(self):
+        if self.mousePos[0] < 730 or self.mousePos[1] < 250:
+            return False
+        if self.mousePos[0] > 878 or self.mousePos[1] > 288:
+            return False
+        print("Butona Basıldı!!")
+        sudokuCoz()
+        solution = Solution()
+        solution.run()
+
+    def mouseOnButton2(self):
+        if self.mousePos[0] < 670 or self.mousePos[1] < 450:
+            return False
+        if self.mousePos[0] > 868 or self.mousePos[1] > 488:
+            return False
+        print("Butona Basıldı!!")
+        sudokuCoz2()
+
+    def mouseOnButton3(self):
+        if self.mousePos[0] < 670 or self.mousePos[1] < 550:
+            return False
+        if self.mousePos[0] > 868 or self.mousePos[1] > 588:
+            return False
+        print("Butona Basıldı!!")
+        solution2 = Solution2()
+        solution2.run()
+
+
 
 
     def textToScreen(self, window, text, pos):
@@ -156,9 +233,9 @@ class App:
 
     def checkNumber(x, y, n):
         global board
-      # up-left sudoku
+      # sol üst sudoku
         if(x < 9 and y < 9):
-            # joint square
+
             if (x > 5 and y > 5):
                 for i in range(0, 15):
                     print(board[y][i])
@@ -199,7 +276,7 @@ class App:
                         if board[y0+i][x0+j] == n:
                             return False
                 return True
-        # up-right sudoku
+        # sağ üst sudoku
         if(x > 8 and y < 9):
             if (y > 5 and x > 14):
                 for i in range(12, 21):
@@ -217,7 +294,7 @@ class App:
                         if board[y0+i][x0+j] == n:
                             return False
                     return True
-            # joint square
+
             elif (x > 11 and x < 15 and y > 5):
                 for i in range(6, 21):
 
@@ -254,7 +331,7 @@ class App:
                         if board[y0+i][x0+j] == n:
                             return False
                     return True
-        # down-right sudoku
+        # sağ alt sudoku
         if(x > 8 and y > 11):
             if y < 15 and x > 14:
                 for i in range(12, 21):
@@ -276,7 +353,7 @@ class App:
                         if board[y0+i][x0+j] == n:
                             return False
                     return True
-                # joint square
+
             elif (x > 11 and x < 15 and y < 15):
                 for i in range(6, 21):
 
@@ -315,9 +392,9 @@ class App:
                     if board[y0+i][x0+j] == n:
                         return False
             return True
-        # down-left sudoku
+        # sol alt sudoku
         if(x < 9 and y > 11):
-            # joint square
+
             if (x > 5 and y < 15):
                 for i in range(0, 15):
                     print(board[y][i])
@@ -358,7 +435,7 @@ class App:
                         if board[y0+i][x0+j] == n:
                             return False
                 return True
-          # up-middle 3*3 square
+          # orta üst 3*3 kare
         if(x > 8 and x < 12) and (y > 5 and y < 9):
             for i in range(6, 15):
                 print(board[y][i])
@@ -378,7 +455,7 @@ class App:
                     if board[y0+i][x0+j] == n:
                         return False
             return True
-      # down-middle 3*3 square
+      # alt orta 3*3 kare
         if(x > 8 and x < 12) and (y > 5 and y < 9):
             for i in range(6, 15):
                 print(board[y][i])
@@ -397,7 +474,7 @@ class App:
                     if board[y0+i][x0+j] == n:
                         return False
             return True
-      # middle 6*3
+      # orta 6*3
         if(x < 9 and y > 8 and y < 12):
             for i in range(0, 9):
                 print(board[y][i])
@@ -417,4 +494,7 @@ class App:
                     if board[y0+i][x0+j] == n:
                         return False
             return True
-    print(checkNumber(1, 1, str(8)))
+
+
+
+
