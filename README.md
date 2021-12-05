@@ -17,4 +17,6 @@ ayarlar ve dosya okuma ayarları settings.py
 görsel olarak solution.py aracılığıyla kullanıcıya 
 gösterilmektedir.
 
+![alt text](https://github.com/gokceyilmazz/Samurai-Sudoku-Solver/blob/main/ekran.png)
+
 
