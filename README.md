@@ -19,4 +19,6 @@ gösterilmektedir.
 
 ![alt text](https://github.com/gokceyilmazz/Samurai-Sudoku-Solver/blob/main/ekran.png)
 
+![alt text](https://github.com/gokceyilmazz/Samurai-Sudoku-Solver/blob/main/sonuc.png)
+
 
